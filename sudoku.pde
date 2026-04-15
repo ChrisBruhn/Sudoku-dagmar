@@ -1,14 +1,23 @@
-SudokuSolver sudo = new SudokuSolver(); //<>// //<>//
+SudokuMaker sudo = new SudokuMaker(); //<>// //<>// //<>//
 
+// istedet for en ArrayListe bruger jeg en intListe.
+IntList firstRowNumbers=new IntList();
+
+
+
+// Deklaration af min matrix
 int[][] mat = new int[9][9];
 
 
 void setup() {
   size(800, 800);
-  initArray();
   textSize(20);
   textAlign(CENTER, CENTER);
   fill(0);
+
+  makeFirstRow(); // laver en tilføldig række af tal fra 1 til 9
+  initArray();
+  
 }
 
 
@@ -19,15 +28,13 @@ void draw() {
 }
 
 void mousePressed() {
-  generate();
+  // lav en soduku plade når jeg klikker på musen
+  mat = sudo.makeSudoku(mat);
 }
 
 
-void generate() {
-  mat = sudo.solveSudoku(mat);
-}
 
-
+// her tegner jeg bare spille pladen
 void drawGrid() {
   int cellHeight=50;
   for (int i =0; i<mat.length+1; i++) {
@@ -39,7 +46,9 @@ void drawGrid() {
   }
 }
 
+// her skriver jeg alle numre i cellerne på spille pladen
 void drawNumbers() {
+  // jeg bruger push og popMatrix for at undgå at tage højde for margin
   pushMatrix();
   translate(100, 100);
   for (int i = 0; i < mat.length; i++) {
@@ -52,12 +61,39 @@ void drawNumbers() {
 
 
 void initArray() {
+  //udfyld med nuller
   for (int i = 0; i<mat.length-1; i++) {
     for (int j =0; j<mat[i].length-1; j++) {
       mat[i][j]=0;
     }
   }
-  mat[0][0] = (int)random(0, 10);
-    mat[0][1] = (int)random(0, 10);
-    mat[0][2] = (int)random(0, 10);
+    // overfør mine tilfældige til til den første kolonne i spillepladen
+  for (int i=0; i<9; i++) {
+    mat[0][i] = firstRowNumbers.get(i);
+  }
+
+  
+}
+
+
+
+// for at undgå at den første række er 1234... laver jeg den første række med tilfældige tal
+void makeFirstRow() {
+  boolean done = false;
+
+  for (int i=0; i<9; i++) {
+    done = false;
+
+    // bliv ved indtil jeg finder et tal som ikke er i listen
+    while (!done) {
+      int number = (int)random(1, 10);
+      // hvis number ikke findes i listen tilføj det.
+      if (firstRowNumbers.hasValue(number) == false) {
+        firstRowNumbers.append(number);
+        done = true;
+      }
+    }
+  }
+
+  println(firstRowNumbers);
 }
